@@ -1,7 +1,7 @@
 StickHeaderLayout
 ======================
 
-An Android library supports sticking the navigator on the top when ItemView scrolls. more flexible than 「 [github.com/w446018264/StickyHeaderViewPager](https://github.com/w446018264/StickyHeaderViewPager) 」
+An Android library supports sticking the navigator on the top when ItemView scrolls. more flexible than 「 [github.com/w446108264/StickyHeaderViewPager](https://github.com/w446108264/StickyHeaderViewPager) 」
 
 
 To sticks the navigatior on the top can overwriting the View or dispatch events,
