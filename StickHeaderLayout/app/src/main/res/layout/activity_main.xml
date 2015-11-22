@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/btn_simple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="ListView Activity" />
+
+    <Button
+        android:id="@+id/btn_recyclerviewsimple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="RecyclerView Simple Activity" />
+
+    <Button
+        android:id="@+id/btn_webviewsimple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="WebView Simple Activity" />
+
+    <Button
+        android:id="@+id/btn_scrollviewsimple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="ScrollView Simple Activity" />
+
+    <Button
+        android:id="@+id/btn_viewpagersimple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="ViewPager Simple Activity" />
+
+    <TextView
+        android:id="@+id/tv_currentproject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="4dp"
+        android:textColor="#ff0099cc"
+        android:textSize="10sp"
+        android:text="https://github.com/w446108264/StickHeaderLayout" />
+
+    <TextView
+        android:id="@+id/tv_viewpager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="4dp"
+        android:textColor="#ff0099cc"
+        android:textSize="10sp"
+        android:text="https://github.com/w446108264/StickyHeaderViewPager" />
+</LinearLayout>

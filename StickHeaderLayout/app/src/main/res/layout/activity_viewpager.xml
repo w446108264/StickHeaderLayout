@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.stickheaderlayout.StickHeaderLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ListViewSimpleActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#293"
+        android:gravity="center"
+        android:text="header" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#874"
+            android:gravity="center"
+            android:text="viewpager simple activity" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_tab1"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="scroll pager1"
+                android:background="#124020"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv_tab2"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="scroll pager2"
+                android:background="#521242"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/v_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</com.stickheaderlayout.StickHeaderLayout>
