@@ -9,12 +9,6 @@ import android.widget.ScrollView;
  */
 public class NotifyingListenerScrollView extends ScrollView {
 
-    public interface OnScrollChangedListener {
-        void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt);
-    }
-
-    private OnScrollChangedListener mOnScrollChangedListener;
-
     public NotifyingListenerScrollView(Context context) {
         super(context);
     }
@@ -26,6 +20,12 @@ public class NotifyingListenerScrollView extends ScrollView {
     public NotifyingListenerScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+
+    public interface OnScrollChangedListener {
+        void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt);
+    }
+
+    private OnScrollChangedListener mOnScrollChangedListener;
 
     /**
      * This is called in response to an internal scroll in this view (i.e., the

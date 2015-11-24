@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<in.srain.cube.views.ptr.PtrClassicFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rotate_header_list_view_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    cube_ptr:ptr_duration_to_close="200"
+    cube_ptr:ptr_duration_to_close_header="1000"
+    cube_ptr:ptr_keep_header_when_refresh="false"
+    cube_ptr:ptr_pull_to_fresh="false"
+    cube_ptr:ptr_ratio_of_header_height_to_refresh="1"
+    cube_ptr:ptr_resistance="1.1">
+
+    <com.stickheaderlayout.StickHeaderLayout
+        android:id="@+id/shl_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scrollViewId="@+id/v_scroll"
+        tools:context=".ListViewSimpleActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#293"
+            android:gravity="center"
+            android:text="header" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#874"
+            android:gravity="center"
+            android:text="listview simple activity" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/v_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="80dp"
+                android:text="TEST" />
+        </RelativeLayout>
+    </com.stickheaderlayout.StickHeaderLayout>
+
+</in.srain.cube.views.ptr.PtrClassicFrameLayout>

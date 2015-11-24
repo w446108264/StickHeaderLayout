@@ -12,6 +12,10 @@ public abstract class RecyclerWithHeaderAdapter<T extends RecyclerView.ViewHolde
     private static final int TYPE_HEADER = -1616;
     private View placeHolderView;
 
+    public View getPlaceHolderView(){
+        return placeHolderView;
+    }
+
     @Override
     public final RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         if(viewType == TYPE_HEADER){
@@ -24,15 +28,15 @@ public abstract class RecyclerWithHeaderAdapter<T extends RecyclerView.ViewHolde
         return oncreateViewHolder(viewGroup, viewType);
     }
 
-    public View getPlaceHolderView(){
-        return placeHolderView;
+    @Override
+    public final int getItemViewType(int position) {
+        return position == 0 ? TYPE_HEADER : getitemViewType(position);
     }
 
     public abstract T oncreateViewHolder(ViewGroup viewGroup, int viewType) ;
 
-    @Override
-    public final int getItemViewType(int position) {
-        return position == 0 ? TYPE_HEADER : super.getItemViewType(position);
+    public int getitemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     private class RecyclerPlaceViewHolder extends RecyclerView.ViewHolder {

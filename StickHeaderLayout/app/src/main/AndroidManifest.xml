@@ -22,6 +22,9 @@
         <activity android:name=".RecyclerViewSimpleActivity" />
         <activity android:name=".WebViewSimpleActivity" />
         <activity android:name=".ViewPagerSimpleActivity" />
+        <activity android:name=".PullToRefreshListViewSimpleActivity" />
+        <activity android:name=".PullTofreshViewPagerSimpleActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

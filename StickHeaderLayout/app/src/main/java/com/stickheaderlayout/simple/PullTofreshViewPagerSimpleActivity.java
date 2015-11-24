@@ -1,31 +1,23 @@
 package com.stickheaderlayout.simple;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stickheaderlayout.PlaceHoderHeaderLayout;
-import com.stickheaderlayout.RecyclerWithHeaderAdapter;
 import com.stickheaderlayout.StickHeaderLayout;
 import com.stickheaderlayout.StickHeaderViewPagerManager;
 import com.stickheaderlayout.simple.viewpager.SimpleListView;
+import com.stickheaderlayout.simple.viewpager.SimpleMultiRecyclerView;
 import com.stickheaderlayout.simple.viewpager.SimpleRecyclerView;
 import com.stickheaderlayout.simple.viewpager.SimpleScrollView;
 import com.stickheaderlayout.simple.viewpager.SimpleWebView;
@@ -33,28 +25,46 @@ import com.stickheaderlayout.simple.viewpager.SimpleWebView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerSimpleActivity extends AppCompatActivity {
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+
+public class PullTofreshViewPagerSimpleActivity extends AppCompatActivity {
 
     public static void openActivity(Activity activity){
-        activity.startActivity(new Intent(activity, ViewPagerSimpleActivity.class));
+        activity.startActivity(new Intent(activity, PullTofreshViewPagerSimpleActivity.class));
     }
 
     class ViewPagerBean{
         View root;
         PlaceHoderHeaderLayout placeHoderHeaderLayout;
+        boolean isCanPullToRefresh;
         public ViewPagerBean(View root,PlaceHoderHeaderLayout placeHoderHeaderLayout){
+            this(root,placeHoderHeaderLayout,true);
+        }
+        public ViewPagerBean(View root,PlaceHoderHeaderLayout placeHoderHeaderLayout,boolean isCanPullToRefresh){
             this.root = root;
             this.placeHoderHeaderLayout = placeHoderHeaderLayout;
+            this.isCanPullToRefresh = isCanPullToRefresh;
         }
     }
 
     ArrayList<ViewPagerBean> viewList;
     StickHeaderViewPagerManager manager;
     ViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viewpager);
+        setContentView(R.layout.activity_viewpager_pulltorefresh);
+
+        findViewById(R.id.tv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PullTofreshViewPagerSimpleActivity.this.finish();
+            }
+        });
 
         mViewPager = (ViewPager)findViewById(R.id.v_scroll);
         StickHeaderLayout shl_root = (StickHeaderLayout)findViewById(R.id.shl_root);
@@ -62,19 +72,36 @@ public class ViewPagerSimpleActivity extends AppCompatActivity {
 
         manager = new StickHeaderViewPagerManager(shl_root,mViewPager);
 
+        PtrClassicFrameLayout rotate_header_list_view_frame = (PtrClassicFrameLayout)findViewById(R.id.rotate_header_list_view_frame);
+        rotate_header_list_view_frame.setEnabledNextPtrAtOnce(true);
+        rotate_header_list_view_frame.setLastUpdateTimeRelateObject(this);
+        rotate_header_list_view_frame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                if (manager.isCanPullToRefresh()) {
+                    return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                }
+                return false;
+            }
+        });
+
         viewList = new ArrayList<ViewPagerBean>();
 
-        SimpleRecyclerView simpleRecyclerView = new SimpleRecyclerView(this);
+        SimpleMultiRecyclerView simpleRecyclerView = new SimpleMultiRecyclerView(this);
         viewList.add(new ViewPagerBean(simpleRecyclerView, simpleRecyclerView.getPlaceHoderHeaderLayout()));
 
         SimpleScrollView simpleScrollView = new SimpleScrollView(this);
-        viewList.add(new ViewPagerBean(simpleScrollView,simpleScrollView.getPlaceHoderHeaderLayout()));
+        viewList.add(new ViewPagerBean(simpleScrollView, simpleScrollView.getPlaceHoderHeaderLayout()));
 
         SimpleListView simpleListView = new SimpleListView(this);
         viewList.add(new ViewPagerBean(simpleListView, simpleListView.getPlaceHoderHeaderLayout()));
 
         SimpleWebView simpleWebView = new SimpleWebView(this);
-        viewList.add(new ViewPagerBean(simpleWebView, simpleWebView.getPlaceHoderHeaderLayout()));
+        viewList.add(new ViewPagerBean(simpleWebView, simpleWebView.getPlaceHoderHeaderLayout(),false));
 
         mViewPager.setAdapter(pagerAdapter);
 
@@ -133,8 +160,13 @@ public class ViewPagerSimpleActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             container.addView(viewList.get(position).root);
-            manager.addPlaceHoderHeaderLayout(position, viewList.get(position).placeHoderHeaderLayout);
+            manager.addPlaceHoderHeaderLayout(position, viewList.get(position).placeHoderHeaderLayout,viewList.get(position).isCanPullToRefresh);
             return viewList.get(position).root;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
         }
     };
 }

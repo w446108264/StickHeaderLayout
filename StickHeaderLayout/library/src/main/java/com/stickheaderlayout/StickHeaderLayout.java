@@ -1,11 +1,14 @@
 package com.stickheaderlayout;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -23,34 +26,39 @@ import android.widget.ScrollView;
  */
 public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
 
-    private static final int NO_SCROLL_X = 0;
-
     private FrameLayout rootFrameLayout;
-    private LinearLayout stickheaderLinearLayout;
+    private LinearLayout mStickheader;
     private View placeHolderView;
 
     private View mScrollItemView;
+    private int mScrollViewId;
 
     private int mStickHeaderHeight;
     private int mStickViewHeight;
     private int mMinHeaderTranslation;
-
     private int mRecyclerViewScrollY;
 
     public View getStickHeaderView(){
-        return stickheaderLinearLayout;
+        return mStickheader;
     }
 
     public StickHeaderLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.StickHeaderLayout);
+        if(typedArray != null){
+            mScrollViewId = typedArray.getResourceId(R.styleable.StickHeaderLayout_scrollViewId, mScrollViewId);
+            typedArray.recycle();
+        }
+
+        // add root
         rootFrameLayout = new FrameLayout(context);
         addView(rootFrameLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         // add header
-        stickheaderLinearLayout = new LinearLayout(context);
-        stickheaderLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        addView(stickheaderLinearLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mStickheader = new LinearLayout(context);
+        mStickheader.setOrientation(LinearLayout.VERTICAL);
+        addView(mStickheader, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
@@ -58,8 +66,8 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
         if (getChildCount() < 2) {
             super.addView(child, index, params);
         } else {
-            if (stickheaderLinearLayout.getChildCount() < 2) {
-                stickheaderLinearLayout.addView(child, params);
+            if (mStickheader.getChildCount() < 2) {
+                mStickheader.addView(child, params);
                 return;
             }
             if (rootFrameLayout.getChildCount() > 1) {
@@ -73,10 +81,10 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mScrollItemView = rootFrameLayout.getChildAt(0);
+        mScrollItemView =  mScrollViewId != 0 ? findViewById(mScrollViewId) : rootFrameLayout.getChildAt(0);
 
         if (mScrollItemView instanceof ScrollView) {
-            ScrollView scrollView = (ScrollView) rootFrameLayout.getChildAt(0);
+            ScrollView scrollView = (ScrollView) mScrollItemView;
 
             View contentView = scrollView.getChildAt(0);
             scrollView.removeView(contentView);
@@ -98,7 +106,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
                 });
             }
         } else if (mScrollItemView instanceof ListView) {
-            ListView listView = (ListView) rootFrameLayout.getChildAt(0);
+            ListView listView = (ListView) mScrollItemView;
 
             placeHolderView = new View(getContext());
             listView.addHeaderView(placeHolderView);
@@ -113,7 +121,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
                 }
             });
         } else if(mScrollItemView instanceof RecyclerView){
-            RecyclerView recyclerView = (RecyclerView) rootFrameLayout.getChildAt(0);
+            RecyclerView recyclerView = (RecyclerView) mScrollItemView;
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -147,25 +155,25 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
     }
 
     private void initStickHeaderViewHight() {
-        final ViewTreeObserver vto = stickheaderLinearLayout.getViewTreeObserver();
+        final ViewTreeObserver vto = mStickheader.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mStickHeaderHeight = stickheaderLinearLayout.getMeasuredHeight();
-                mStickViewHeight = stickheaderLinearLayout.getChildAt(1).getMeasuredHeight();
+                mStickHeaderHeight = mStickheader.getMeasuredHeight();
+                mStickViewHeight = mStickheader.getChildAt(1).getMeasuredHeight();
                 if (mStickHeaderHeight > 0 && mStickViewHeight > 0) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        stickheaderLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        mStickheader.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     } else {
-                        stickheaderLinearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        mStickheader.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
-                    updateChildViewHight();
+                    updatePlaceHeight();
                 }
             }
         });
     }
 
-    private void updateChildViewHight() {
+    private void updatePlaceHeight() {
         if (mStickHeaderHeight != 0 && mStickViewHeight != 0) {
             mMinHeaderTranslation = -mStickHeaderHeight + mStickViewHeight;
 
@@ -183,14 +191,11 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
                 }
             }
 
-            if(onPlaceHoderHeightChangeListener != null){
-                onPlaceHoderHeightChangeListener.heightChangeListener(mStickHeaderHeight ,mMinHeaderTranslation);
+            if(onPlaceHoderListener != null){
+                onPlaceHoderListener.onSizeChanged(mStickHeaderHeight, mMinHeaderTranslation);
             }
         }
     }
-
-    @Override
-    public void adjustScroll(int scrollHeight, int headerHeight) { }
 
     @Override
     public void onListViewScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount, int pagePosition) {
@@ -207,9 +212,12 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
         scrollHeader(scrollY);
     }
 
-    private void scrollHeader(int scrollY) {
+    public void scrollHeader(int scrollY) {
+        if(onPlaceHoderListener != null){
+            onPlaceHoderListener.onScrollChanged(scrollY);
+        }
         float translationY = Math.max(-scrollY, mMinHeaderTranslation);
-        stickheaderLinearLayout.setTranslationY(translationY);
+        mStickheader.setTranslationY(translationY);
     }
 
     private int getListScrollY(AbsListView view) {
@@ -229,12 +237,13 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
         return -top + firstVisiblePosition * child.getHeight() + headerHeight;
     }
 
-    OnPlaceHoderHeightChangeListener onPlaceHoderHeightChangeListener;
+    OnPlaceHoderListener onPlaceHoderListener;
 
-    public void setOnPlaceHoderHeightChangeListener(OnPlaceHoderHeightChangeListener onPlaceHoderHeightChangeListener){
-        this.onPlaceHoderHeightChangeListener = onPlaceHoderHeightChangeListener;
+    public void setOnPlaceHoderListener(OnPlaceHoderListener onPlaceHoderListener){
+        this.onPlaceHoderListener = onPlaceHoderListener;
     }
-    public interface OnPlaceHoderHeightChangeListener{
-        void heightChangeListener(int headerHeight ,int stickHeight) ;
+    public interface OnPlaceHoderListener{
+        void onSizeChanged(int headerHeight ,int stickHeight) ;
+        void onScrollChanged(int height) ;
     }
 }

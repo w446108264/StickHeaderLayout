@@ -49,6 +49,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_listview_pulltorefresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PullToRefreshListViewSimpleActivity.openActivity(MainActivity.this);
+            }
+        });
+
+        findViewById(R.id.btn_viewpager_pulltorefresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PullTofreshViewPagerSimpleActivity.openActivity(MainActivity.this);
+            }
+        });
+
         findViewById(R.id.tv_currentproject).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

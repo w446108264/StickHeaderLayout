@@ -26,6 +26,7 @@
             android:text="viewpager simple activity" />
 
         <LinearLayout
+            android:id="@+id/ly_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -35,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:gravity="center"
-                android:text="scroll pager1"
+                android:text="Recycler"
                 android:background="#124020"
                 android:textColor="@android:color/black"
                 android:layout_weight="1"/>
@@ -45,7 +46,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:gravity="center"
-                android:text="scroll pager2"
+                android:text="ScrollView"
+                android:background="#521242"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv_tab3"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="ListView"
+                android:background="#521242"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv_tab4"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="WebView"
                 android:background="#521242"
                 android:textColor="@android:color/white"
                 android:layout_weight="1"/>

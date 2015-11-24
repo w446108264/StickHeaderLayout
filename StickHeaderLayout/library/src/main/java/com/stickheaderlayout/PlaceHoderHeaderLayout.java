@@ -1,11 +1,13 @@
 package com.stickheaderlayout;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,27 +22,21 @@ import android.widget.ScrollView;
 /**
  * Created by sj on 15/11/22.
  */
-public class PlaceHoderHeaderLayout extends RelativeLayout implements ScrollHolder{
-
-    private static final int NO_SCROLL_X = 0;
+public class PlaceHoderHeaderLayout extends FrameLayout {
 
     private View placeHolderView;
     private View mScrollItemView;
-
-    private View sitckheader;
-
-    private int mStickHeaderHeight;
-    private int mMinHeaderTranslation;
-
-    public void setStickHeader(View view){
-        this.sitckheader = view;
-    }
-    public View getStickHeader(){
-        return sitckheader;
-    }
+    private int mScrollViewId;
+    private int mRecyclerViewScrollY;
+    private boolean mIsRegisterScrollListener;
 
     public PlaceHoderHeaderLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.StickHeaderLayout);
+        if (typedArray != null) {
+            mScrollViewId = typedArray.getResourceId(R.styleable.StickHeaderLayout_scrollViewId, mScrollViewId);
+            typedArray.recycle();
+        }
     }
 
     @Override
@@ -55,68 +51,126 @@ public class PlaceHoderHeaderLayout extends RelativeLayout implements ScrollHold
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mScrollItemView = getChildAt(0);
+        mScrollItemView = mScrollViewId != 0 ? findViewById(mScrollViewId) : getChildAt(0);
+
+        if (mScrollItemView == null) {
+            return;
+        }
 
         if (mScrollItemView instanceof ScrollView) {
             ScrollView scrollView = (ScrollView) mScrollItemView;
-
             View contentView = scrollView.getChildAt(0);
             scrollView.removeView(contentView);
-
             LinearLayout childLayout = new LinearLayout(getContext());
             childLayout.setOrientation(LinearLayout.VERTICAL);
-
             placeHolderView = new View(getContext());
             childLayout.addView(placeHolderView, ViewGroup.LayoutParams.MATCH_PARENT, 0);
             childLayout.addView(contentView);
             scrollView.addView(childLayout);
+        } else if (mScrollItemView instanceof ListView) {
+            ListView listView = (ListView) mScrollItemView;
+            placeHolderView = new View(getContext());
+            listView.addHeaderView(placeHolderView);
+        } else if (mScrollItemView instanceof WebView) {
+            removeView(mScrollItemView);
+            NestingWebViewScrollView scrollView = new NestingWebViewScrollView(getContext());
+            LinearLayout childLayout = new LinearLayout(getContext());
+            childLayout.setOrientation(LinearLayout.VERTICAL);
+            placeHolderView = new View(getContext());
+            childLayout.addView(placeHolderView, ViewGroup.LayoutParams.MATCH_PARENT, 0);
+            childLayout.addView(mScrollItemView);
+            scrollView.addView(childLayout);
+            mScrollItemView = scrollView;
+            addView(scrollView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
 
-            if (scrollView instanceof NotifyingListenerScrollView) {
-                ((NotifyingListenerScrollView) scrollView).setOnScrollChangedListener(new NotifyingListenerScrollView.OnScrollChangedListener() {
-                    @Override
-                    public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
-                        onScrollViewScroll(who, l, t, oldl, oldt, 0);
-                    }
-                });
+        if (onFinishInflateListener != null) {
+            onFinishInflateListener.onFinishInflate(mScrollItemView);
+        }
+    }
+
+    public void updatePlaceHeight(int placeHoderHeight, final StickHeaderViewPagerManager stickHeaderViewPagerManager, final int position) {
+        if (mScrollItemView instanceof RecyclerView && ((RecyclerView) mScrollItemView).getAdapter() != null) {
+            placeHolderView = ((RecyclerWithHeaderAdapter) (((RecyclerView) mScrollItemView).getAdapter())).getPlaceHolderView();
+        }
+
+        if (placeHolderView != null) {
+            ViewGroup.LayoutParams params = placeHolderView.getLayoutParams();
+            if (params != null) {
+                params.height = placeHoderHeight;
+                placeHolderView.setLayoutParams(params);
+            }
+
+            if (!mIsRegisterScrollListener) {
+                if (mScrollItemView instanceof NotifyingListenerScrollView) {
+                    ((NotifyingListenerScrollView) mScrollItemView).setOnScrollChangedListener(new NotifyingListenerScrollView.OnScrollChangedListener() {
+                        @Override
+                        public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+                            stickHeaderViewPagerManager.onScrollViewScroll(who, l, t, oldl, oldt, position);
+                        }
+                    });
+                } else if (mScrollItemView instanceof ListView) {
+                    ((ListView) mScrollItemView).setOnScrollListener(new AbsListView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(AbsListView view, int scrollState) {
+                        }
+
+                        @Override
+                        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                            stickHeaderViewPagerManager.onListViewScroll(view, firstVisibleItem, visibleItemCount, totalItemCount, position);
+                        }
+                    });
+                } else if (mScrollItemView instanceof RecyclerView) {
+                    ((RecyclerView) mScrollItemView).addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+                            mRecyclerViewScrollY += dy;
+                            stickHeaderViewPagerManager.onRecyclerViewScroll(recyclerView, mRecyclerViewScrollY, position);
+                        }
+                    });
+                } else if (mScrollItemView instanceof NestingWebViewScrollView) {
+                    ((NestingWebViewScrollView) mScrollItemView).setOnScrollChangedListener(new NotifyingListenerScrollView.OnScrollChangedListener() {
+                        @Override
+                        public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+                            stickHeaderViewPagerManager.onScrollViewScroll(who, l, t, oldl, oldt, position);
+                        }
+                    });
+                }
+                mIsRegisterScrollListener = true;
             }
         }
     }
 
-    public void updatePlaceHeight(int headerHeight, int stickHeight){
-        mStickHeaderHeight = headerHeight;
-        mMinHeaderTranslation = stickHeight;
-        if(placeHolderView != null){
-            ViewGroup.LayoutParams params = placeHolderView.getLayoutParams();
-            params.height = headerHeight;
-            placeHolderView.setLayoutParams(params);
-        }
-    }
-
-    @Override
     public void adjustScroll(int scrollHeight, int headerHeight) {
-
         if (mScrollItemView == null) return;
 
-        if (mScrollItemView instanceof ScrollView) {
-            ((ScrollView) mScrollItemView).scrollTo(NO_SCROLL_X, headerHeight - scrollHeight);
+        if (mScrollItemView instanceof ListView) {
+            if (scrollHeight == 0 && ((ListView) mScrollItemView).getFirstVisiblePosition() >= 1) {
+                return;
+            }
+            ((ListView) mScrollItemView).setSelectionFromTop(1, scrollHeight);
+        } else if (mScrollItemView instanceof ScrollView) {
+            ((ScrollView) mScrollItemView).scrollTo(0, headerHeight - scrollHeight);
+        } else if (mScrollItemView instanceof RecyclerView) {
+            mRecyclerViewScrollY = headerHeight - scrollHeight;
+            if (((RecyclerView) mScrollItemView).getLayoutManager() != null) {
+                if (((RecyclerView) mScrollItemView).getLayoutManager() instanceof LinearLayoutManager) {
+                    ((LinearLayoutManager) ((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPositionWithOffset(0, -mRecyclerViewScrollY);
+                } else if (((RecyclerView) mScrollItemView).getLayoutManager() instanceof GridLayoutManager) {
+                    ((GridLayoutManager) ((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPositionWithOffset(0, -mRecyclerViewScrollY);
+                }
+            }
         }
     }
 
-    @Override
-    public void onScrollViewScroll(ScrollView view, int x, int y, int oldX, int oldY, int pagePosition) {
-        scrollHeader(view.getScrollY());
+    OnFinishInflateListener onFinishInflateListener;
+
+    public void setOnFinishInflateListener(OnFinishInflateListener onFinishInflateListener) {
+        this.onFinishInflateListener = onFinishInflateListener;
     }
 
-    @Override
-    public void onListViewScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount, int pagePosition) { }
-
-    @Override
-    public void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition) { }
-
-    private void scrollHeader(int scrollY) {
-        float translationY = Math.max(-scrollY, mMinHeaderTranslation);
-        if(sitckheader != null){
-            sitckheader.setTranslationY(translationY);
-        }
+    public interface OnFinishInflateListener {
+        void onFinishInflate(View mScrollItemView);
     }
 }

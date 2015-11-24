@@ -1,37 +1,46 @@
-package com.stickheaderlayout.simple;
+package com.stickheaderlayout.simple.viewpager;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.stickheaderlayout.PlaceHoderHeaderLayout;
 import com.stickheaderlayout.RecyclerWithHeaderAdapter;
+import com.stickheaderlayout.simple.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewSimpleActivity extends AppCompatActivity {
+/**
+ * Created by sj on 15/11/24.
+ */
+public class SimpleRecyclerView extends FrameLayout{
 
-    public static void openActivity(Activity activity){
-        activity.startActivity(new Intent(activity,RecyclerViewSimpleActivity.class));
+    PlaceHoderHeaderLayout placeHoderHeaderLayout;
+
+    public SimpleRecyclerView(Context context) {
+        super(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.page_recyclerview, this);
+        placeHoderHeaderLayout = (PlaceHoderHeaderLayout)view.findViewById(R.id.v_placehoder);
+        initRecyclerView(view);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recyclerview);
+    public PlaceHoderHeaderLayout getPlaceHoderHeaderLayout() {
+        return placeHoderHeaderLayout;
+    }
 
-        RecyclerView v_scroll = (RecyclerView)findViewById(R.id.v_scroll);
+    public void initRecyclerView(View view){
+        RecyclerView v_scroll = (RecyclerView)view.findViewById(R.id.v_scroll);
 
-        LinearLayoutManager mLayoutMgr = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutMgr = new LinearLayoutManager(getContext());
         v_scroll.setLayoutManager(mLayoutMgr);
 
         RecyclerAdapter recyclerAdapter = new RecyclerAdapter();
