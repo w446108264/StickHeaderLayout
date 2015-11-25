@@ -36,8 +36,24 @@ You can [download a sample APK](https://github.com/w446108264/StickHeaderLayout/
 
 # Gradle Dependency
 
+Users of your library will need add the jitpack.io repository:
 
+```xml  
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+```
 
+and:
+
+```xml
+dependencies { 
+    compile 'com.github.w446108264:StickHeaderLayout:1.0.1'
+}
+```
 --
 
 
