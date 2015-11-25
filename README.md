@@ -9,12 +9,8 @@ Why choosing a way which add a header on scrolling view that looks more complex 
   
 ![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/little.gif)
 
-![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/p1.jpg)
-  
-![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/p2.jpg)
+![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/p1.jpg)  ![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/p2.jpg)  ![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/p3.jpg)
    
-![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/p3.jpg)
- 
 ![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/listview.gif)
   
 ![Art](https://github.com/w446108264/StickHeaderLayout/raw/master/output/viewpager.gif)
@@ -30,7 +26,7 @@ Why choosing a way which add a header on scrolling view that looks more complex 
 
 # Samples
 
-You can [download a sample APK](https://github.com/w446108264/StickHeaderLayout/raw/master/output/simple.apk) 
+You can [download a sample APK](https://github.com/w446108264/StickHeaderLayout/raw/master/output/simple1.0.2.apk) 
 
 
 
