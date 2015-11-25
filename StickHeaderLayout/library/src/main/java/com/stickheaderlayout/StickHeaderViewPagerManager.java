@@ -138,7 +138,7 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
     public boolean isCanPullToRefresh(){
         int currentItem = mViewPager.getCurrentItem();
         if(mStickHeaderTranslationY <= 0 && canPullToRefreshPosiTionSet.contains(currentItem)){
-            return true;
+            return mStickHeaderLayout == null ? true : !mStickHeaderLayout.isHorizontalScrolling();
         }
         return false;
     }
