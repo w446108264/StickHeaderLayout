@@ -48,6 +48,14 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (onAttachedToWindowListener != null) {
+            onAttachedToWindowListener.onAttachedToWindow(this);
+        }
+    }
+
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
@@ -83,23 +91,24 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
             mScrollItemView = scrollView;
             addView(scrollView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
-
-        if (onFinishInflateListener != null) {
-            onFinishInflateListener.onFinishInflate(mScrollItemView);
-        }
     }
 
-    public void updatePlaceHeight(int placeHoderHeight, final StickHeaderViewPagerManager stickHeaderViewPagerManager, final int position) {
+    public void updatePlaceHeight(final int placeHoderHeight, final StickHeaderViewPagerManager stickHeaderViewPagerManager, final int position) {
         if (mScrollItemView instanceof RecyclerView && ((RecyclerView) mScrollItemView).getAdapter() != null) {
             placeHolderView = ((RecyclerWithHeaderAdapter) (((RecyclerView) mScrollItemView).getAdapter())).getPlaceHolderView();
         }
 
-        if (placeHolderView != null) {
-            ViewGroup.LayoutParams params = placeHolderView.getLayoutParams();
-            if (params != null) {
-                params.height = placeHoderHeight;
-                placeHolderView.setLayoutParams(params);
-            }
+        if (placeHolderView != null && placeHoderHeight != 0) {
+            placeHolderView.post(new Runnable() {
+                @Override
+                public void run() {
+                    ViewGroup.LayoutParams params = placeHolderView.getLayoutParams();
+                    if (params != null) {
+                        params.height = placeHoderHeight;
+                        placeHolderView.setLayoutParams(params);
+                    }
+                }
+            });
 
             if (!mIsRegisterScrollListener) {
                 if (mScrollItemView instanceof NotifyingListenerScrollView) {
@@ -164,13 +173,13 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
         }
     }
 
-    OnFinishInflateListener onFinishInflateListener;
+    OnAttachedToWindowListener onAttachedToWindowListener;
 
-    public void setOnFinishInflateListener(OnFinishInflateListener onFinishInflateListener) {
-        this.onFinishInflateListener = onFinishInflateListener;
+    public void setOnAttachedToWindowListener(OnAttachedToWindowListener onAttachedToWindowListener) {
+        this.onAttachedToWindowListener = onAttachedToWindowListener;
     }
 
-    public interface OnFinishInflateListener {
-        void onFinishInflate(View mScrollItemView);
+    public interface OnAttachedToWindowListener {
+        void onAttachedToWindow(PlaceHoderHeaderLayout placeHoderHeaderLayout);
     }
 }

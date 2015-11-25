@@ -1,4 +1,4 @@
-package com.stickheaderlayout.simple.viewpager;
+package com.stickheaderlayout.simple.pageviews;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;

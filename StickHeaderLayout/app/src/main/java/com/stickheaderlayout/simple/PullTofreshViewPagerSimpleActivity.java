@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,11 +15,10 @@ import android.widget.TextView;
 import com.stickheaderlayout.PlaceHoderHeaderLayout;
 import com.stickheaderlayout.StickHeaderLayout;
 import com.stickheaderlayout.StickHeaderViewPagerManager;
-import com.stickheaderlayout.simple.viewpager.SimpleListView;
-import com.stickheaderlayout.simple.viewpager.SimpleMultiRecyclerView;
-import com.stickheaderlayout.simple.viewpager.SimpleRecyclerView;
-import com.stickheaderlayout.simple.viewpager.SimpleScrollView;
-import com.stickheaderlayout.simple.viewpager.SimpleWebView;
+import com.stickheaderlayout.simple.pageviews.SimpleListView;
+import com.stickheaderlayout.simple.pageviews.SimpleMultiRecyclerView;
+import com.stickheaderlayout.simple.pageviews.SimpleScrollView;
+import com.stickheaderlayout.simple.pageviews.SimpleWebView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +66,6 @@ public class PullTofreshViewPagerSimpleActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager)findViewById(R.id.v_scroll);
         StickHeaderLayout shl_root = (StickHeaderLayout)findViewById(R.id.shl_root);
-        mViewPager.setOffscreenPageLimit(4);
 
         manager = new StickHeaderViewPagerManager(shl_root,mViewPager);
 
@@ -159,14 +156,14 @@ public class PullTofreshViewPagerSimpleActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(viewList.get(position).root);
+            ((ViewGroup)container).addView(viewList.get(position).root);
             manager.addPlaceHoderHeaderLayout(position, viewList.get(position).placeHoderHeaderLayout,viewList.get(position).isCanPullToRefresh);
             return viewList.get(position).root;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
+            ((ViewPager) container).removeView((View) object);
         }
     };
 }

@@ -63,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_viewpager_pulltorefreshfragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PullTofreshViewPagerFragmentSimpleActivity.openActivity(MainActivity.this);
+            }
+        });
+
+
         findViewById(R.id.tv_currentproject).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

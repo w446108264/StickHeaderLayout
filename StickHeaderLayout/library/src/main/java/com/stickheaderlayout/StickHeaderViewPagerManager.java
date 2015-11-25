@@ -65,9 +65,10 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
             canPullToRefreshPosiTionSet.add(position);
         }
         placeHoderHeaderLayoutList.put(position, layout);
-        layout.setOnFinishInflateListener(new PlaceHoderHeaderLayout.OnFinishInflateListener() {
+        layout.updatePlaceHeight(placeHoderHeight, StickHeaderViewPagerManager.this, position);
+        layout.setOnAttachedToWindowListener(new PlaceHoderHeaderLayout.OnAttachedToWindowListener() {
             @Override
-            public void onFinishInflate(View mScrollItemView) {
+            public void onAttachedToWindow(PlaceHoderHeaderLayout placeHoderHeaderLayout) {
                 layout.updatePlaceHeight(placeHoderHeight, StickHeaderViewPagerManager.this, position);
             }
         });

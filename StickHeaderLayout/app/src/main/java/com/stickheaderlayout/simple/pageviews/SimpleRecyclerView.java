@@ -1,9 +1,8 @@
-package com.stickheaderlayout.simple.viewpager;
+package com.stickheaderlayout.simple.pageviews;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

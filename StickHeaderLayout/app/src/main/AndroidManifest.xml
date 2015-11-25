@@ -25,6 +25,8 @@
         <activity android:name=".PullToRefreshListViewSimpleActivity" />
         <activity android:name=".PullTofreshViewPagerSimpleActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".PullTofreshViewPagerFragmentSimpleActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

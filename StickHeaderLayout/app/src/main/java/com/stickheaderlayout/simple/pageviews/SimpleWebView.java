@@ -1,13 +1,11 @@
-package com.stickheaderlayout.simple.viewpager;
+package com.stickheaderlayout.simple.pageviews;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 
 import com.stickheaderlayout.PlaceHoderHeaderLayout;
 import com.stickheaderlayout.simple.R;

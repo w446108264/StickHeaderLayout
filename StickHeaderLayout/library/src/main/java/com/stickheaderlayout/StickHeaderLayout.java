@@ -20,8 +20,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-
 /**
+ *
+ * Any problem about the library. Contact me
+ *
+ * https://github.com/w446108264/StickHeaderLayout
+ * shengjun8486@gmail.com
+ *
  * Created by sj on 15/11/22.
  */
 public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
@@ -259,10 +264,10 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
                 y_move = ev.getRawY();
                 moveDistanceX = (int) (x_move - x_down);
                 moveDistanceY = (int) (y_move - y_down);
-                if (Math.abs(moveDistanceX) > (Math.abs(moveDistanceY) * 0.1)) {
-                    mIsHorizontalScrolling = true;
-                } else {
+                if (Math.abs(moveDistanceY) > 10 && (Math.abs(moveDistanceY) * 0.1 > Math.abs(moveDistanceX))) {
                     mIsHorizontalScrolling = false;
+                } else {
+                    mIsHorizontalScrolling = true;
                 }
                 break;
             default:
