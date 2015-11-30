@@ -36,8 +36,13 @@ public abstract class RecyclerWithHeaderAdapter<T extends RecyclerView.ViewHolde
     @Override
     public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(position > 0){
-            onbindViewHolder(holder,position);
+            onbindViewHolder(holder,position - 1);
         }
+    }
+
+    @Override
+    public final int getItemCount() {
+        return getitemCount() + 1;
     }
 
     public abstract T oncreateViewHolder(ViewGroup viewGroup, int viewType) ;
@@ -47,6 +52,8 @@ public abstract class RecyclerWithHeaderAdapter<T extends RecyclerView.ViewHolde
     }
 
     public void onbindViewHolder(RecyclerView.ViewHolder holder, int position) { }
+
+    public abstract int getitemCount();
 
     private class RecyclerPlaceViewHolder extends RecyclerView.ViewHolder {
         public RecyclerPlaceViewHolder(View itemView) {

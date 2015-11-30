@@ -76,8 +76,8 @@ public class RecyclerViewSimpleActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemCount() {
-            return mItemList == null ? 1 : mItemList.size() + 1;
+        public int getitemCount() {
+            return mItemList == null ? 0 : mItemList.size();
         }
 
         private  class RecyclerItemViewHolder extends RecyclerView.ViewHolder {

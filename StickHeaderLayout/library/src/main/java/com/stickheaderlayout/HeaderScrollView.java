@@ -15,7 +15,7 @@ public class HeaderScrollView extends ScrollView {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(MotionEvent ev) {
         return false;
     }
 }

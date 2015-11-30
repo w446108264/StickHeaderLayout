@@ -96,16 +96,16 @@ public class SimpleMultiRecyclerView extends FrameLayout{
         public void onbindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
             if(viewHolder instanceof RecyclerItemViewHolder){
                 RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
-                holder.tvTitle.setText(mItemList.get(position - 1));
+                holder.tvTitle.setText(mItemList.get(position));
             } else if(viewHolder instanceof RecyclerTitleViewHolder){
                 RecyclerTitleViewHolder holder = (RecyclerTitleViewHolder) viewHolder;
-                holder.tvTitle.setText("Title" +mItemList.get(position - 1));
+                holder.tvTitle.setText("Title" +mItemList.get(position));
             }
         }
 
         @Override
-        public int getItemCount() {
-            return mItemList == null ? 1 : mItemList.size() + 1;
+        public int getitemCount() {
+            return mItemList == null ? 0 : mItemList.size();
         }
 
         private  class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
