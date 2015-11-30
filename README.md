@@ -26,7 +26,7 @@ Why choosing a way which add a header on scrolling view that looks more complex 
 
 # Samples
 
-You can [download a sample APK](https://github.com/w446108264/StickHeaderLayout/raw/master/output/simple1.0.2.apk) 
+You can [download a sample APK](https://github.com/w446108264/StickHeaderLayout/raw/master/output/simple1.0.3.apk) 
 
 
 
@@ -47,7 +47,7 @@ and:
 
 ```xml
 dependencies { 
-    compile 'com.github.w446108264:StickHeaderLayout:1.0.1'
+    compile 'com.github.w446108264:StickHeaderLayout:1.0.3'
 }
 ```
 --
