@@ -78,11 +78,9 @@ public class SimpleRecyclerView extends FrameLayout{
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-            if (position > 0) {
-                RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
-                holder.tvTitle.setText(mItemList.get(position - 1));
-            }
+        public void onbindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+            RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
+            holder.tvTitle.setText(mItemList.get(position - 1));
         }
 
         @Override

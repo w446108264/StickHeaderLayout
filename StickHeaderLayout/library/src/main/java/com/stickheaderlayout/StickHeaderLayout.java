@@ -2,16 +2,11 @@ package com.stickheaderlayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
@@ -29,10 +24,12 @@ import android.widget.ScrollView;
  *
  * Created by sj on 15/11/22.
  */
-public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
+public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, HeaderLinearLayout.OnSizeChangedListener {
+
+    private int mScrollMinY = 10;
 
     private FrameLayout rootFrameLayout;
-    private LinearLayout mStickheader;
+    private HeaderLinearLayout mStickheader;
     private View placeHolderView;
 
     private View mScrollItemView;
@@ -62,9 +59,12 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
         addView(rootFrameLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         // add header
-        mStickheader = new LinearLayout(context);
+        HeaderScrollView scrollView = new HeaderScrollView(context);
+        scrollView.setFillViewport(true);
+        mStickheader = new HeaderLinearLayout(context);
         mStickheader.setOrientation(LinearLayout.VERTICAL);
-        addView(mStickheader, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        scrollView.addView(mStickheader, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        addView(scrollView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
@@ -158,26 +158,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
             });
         }
 
-        initStickHeaderViewHight();
-    }
-
-    private void initStickHeaderViewHight() {
-        final ViewTreeObserver vto = mStickheader.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mStickHeaderHeight = mStickheader.getMeasuredHeight();
-                mStickViewHeight = mStickheader.getChildAt(1).getMeasuredHeight();
-                if (mStickHeaderHeight > 0 && mStickViewHeight > 0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mStickheader.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        mStickheader.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                    updatePlaceHeight();
-                }
-            }
-        });
+        mStickheader.setOnSizeChangedListener(this);
     }
 
     private void updatePlaceHeight() {
@@ -264,7 +245,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
                 y_move = ev.getRawY();
                 moveDistanceX = (int) (x_move - x_down);
                 moveDistanceY = (int) (y_move - y_down);
-                if (Math.abs(moveDistanceY) > 10 && (Math.abs(moveDistanceY) * 0.1 > Math.abs(moveDistanceX))) {
+                if (Math.abs(moveDistanceY) > mScrollMinY && (Math.abs(moveDistanceY) * 0.1 > Math.abs(moveDistanceX))) {
                     mIsHorizontalScrolling = false;
                 } else {
                     mIsHorizontalScrolling = true;
@@ -274,6 +255,10 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
                 break;
         }
         return super.onInterceptTouchEvent(ev);
+    }
+
+    public void setScrollMinY(int y) {
+        mScrollMinY = y;
     }
 
     public boolean isHorizontalScrolling() {
@@ -290,5 +275,12 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder {
         void onSizeChanged(int headerHeight, int stickHeight);
 
         void onScrollChanged(int height);
+    }
+
+    @Override
+    public void onHeaderSizeChanged(int w, int h, int oldw, int oldh) {
+        mStickHeaderHeight = mStickheader.getMeasuredHeight();
+        mStickViewHeight = mStickheader.getChildAt(1).getMeasuredHeight();
+        updatePlaceHeight();
     }
 }

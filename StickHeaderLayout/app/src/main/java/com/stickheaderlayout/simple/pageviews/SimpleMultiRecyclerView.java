@@ -93,7 +93,7 @@ public class SimpleMultiRecyclerView extends FrameLayout{
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        public void onbindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
             if(viewHolder instanceof RecyclerItemViewHolder){
                 RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
                 holder.tvTitle.setText(mItemList.get(position - 1));

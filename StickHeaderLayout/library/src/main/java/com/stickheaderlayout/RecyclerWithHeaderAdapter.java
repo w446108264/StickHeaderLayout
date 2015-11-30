@@ -33,11 +33,20 @@ public abstract class RecyclerWithHeaderAdapter<T extends RecyclerView.ViewHolde
         return position == 0 ? TYPE_HEADER : getitemViewType(position);
     }
 
+    @Override
+    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(position > 0){
+            onbindViewHolder(holder,position);
+        }
+    }
+
     public abstract T oncreateViewHolder(ViewGroup viewGroup, int viewType) ;
 
     public int getitemViewType(int position) {
         return super.getItemViewType(position);
     }
+
+    public void onbindViewHolder(RecyclerView.ViewHolder holder, int position) { }
 
     private class RecyclerPlaceViewHolder extends RecyclerView.ViewHolder {
         public RecyclerPlaceViewHolder(View itemView) {
