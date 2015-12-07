@@ -29,6 +29,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
     private int mScrollMinY = 10;
 
     private FrameLayout rootFrameLayout;
+    private HeaderScrollView headerScrollView;
     private HeaderLinearLayout mStickheader;
     private View placeHolderView;
 
@@ -59,12 +60,12 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
         addView(rootFrameLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         // add header
-        HeaderScrollView scrollView = new HeaderScrollView(context);
-        scrollView.setFillViewport(true);
+        headerScrollView = new HeaderScrollView(context);
+        headerScrollView.setFillViewport(true);
         mStickheader = new HeaderLinearLayout(context);
         mStickheader.setOrientation(LinearLayout.VERTICAL);
-        scrollView.addView(mStickheader, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        addView(scrollView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        headerScrollView.addView(mStickheader, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        addView(headerScrollView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
@@ -231,9 +232,8 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
     float y_move;
     float moveDistanceX;
     float moveDistanceY;
-
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mIsHorizontalScrolling = false;
@@ -254,7 +254,9 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
             default:
                 break;
         }
-        return super.onInterceptTouchEvent(ev);
+        rootFrameLayout.dispatchTouchEvent(ev);
+        headerScrollView.dispatchTouchEvent(ev);
+        return true;
     }
 
     public void setScrollMinY(int y) {

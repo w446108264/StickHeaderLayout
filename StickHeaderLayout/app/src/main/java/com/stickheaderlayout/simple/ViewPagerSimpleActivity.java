@@ -69,6 +69,13 @@ public class ViewPagerSimpleActivity extends AppCompatActivity {
         mViewPager.setAdapter(pagerAdapter);
 
         initTabBar();
+
+        findViewById(R.id.tv_header).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public void initTabBar(){

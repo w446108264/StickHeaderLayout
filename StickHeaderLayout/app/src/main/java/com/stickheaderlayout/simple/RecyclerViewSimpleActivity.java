@@ -72,7 +72,7 @@ public class RecyclerViewSimpleActivity extends AppCompatActivity {
         @Override
         public void onbindViewHolder(RecyclerView.ViewHolder holder, int position) {
             RecyclerItemViewHolder viewHolder = (RecyclerItemViewHolder) holder;
-            viewHolder.tvTitle.setText(mItemList.get(position - 1));
+            viewHolder.tvTitle.setText(mItemList.get(position));
         }
 
         @Override

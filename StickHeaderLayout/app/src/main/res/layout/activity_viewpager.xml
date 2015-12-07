@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ListViewSimpleActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/tv_header"
         android:layout_width="match_parent"
         android:layout_height="900dp"
         android:background="#293"
