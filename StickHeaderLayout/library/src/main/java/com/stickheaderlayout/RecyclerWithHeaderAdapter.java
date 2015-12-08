@@ -55,7 +55,7 @@ public abstract class RecyclerWithHeaderAdapter<T extends RecyclerView.ViewHolde
 
     public abstract int getitemCount();
 
-    private class RecyclerPlaceViewHolder extends RecyclerView.ViewHolder {
+    public class RecyclerPlaceViewHolder extends RecyclerView.ViewHolder {
         public RecyclerPlaceViewHolder(View itemView) {
             super(itemView);
         }

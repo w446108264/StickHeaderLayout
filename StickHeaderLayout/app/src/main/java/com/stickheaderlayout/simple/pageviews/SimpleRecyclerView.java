@@ -42,7 +42,7 @@ public class SimpleRecyclerView extends FrameLayout{
         LinearLayoutManager mLayoutMgr = new LinearLayoutManager(getContext());
         v_scroll.setLayoutManager(mLayoutMgr);
 
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter();
+        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter();
         recyclerAdapter.addItems(createItemList());
         v_scroll.setAdapter(recyclerAdapter);
     }
@@ -56,7 +56,7 @@ public class SimpleRecyclerView extends FrameLayout{
         return list;
     }
 
-    public class RecyclerAdapter extends RecyclerWithHeaderAdapter {
+    public static class RecyclerAdapter extends RecyclerWithHeaderAdapter {
 
         private List<String> mItemList;
 
@@ -78,9 +78,17 @@ public class SimpleRecyclerView extends FrameLayout{
         }
 
         @Override
-        public void onbindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-            RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
+        public void onbindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+            final RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
             holder.tvTitle.setText(mItemList.get(position));
+            holder.itemView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int layoutPosition = holder.getLayoutPosition();
+                    mItemList.remove(layoutPosition - 1);
+                    notifyItemRemoved(layoutPosition);
+                }
+            });
         }
 
         @Override
