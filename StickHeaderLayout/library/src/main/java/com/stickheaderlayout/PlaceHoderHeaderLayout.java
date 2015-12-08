@@ -101,8 +101,8 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
         this.mStickHeaderViewPagerManager = stickHeaderViewPagerManager;
         this.mPosition = position;
 
-        if (mScrollItemView instanceof RecyclerView && ((RecyclerView) mScrollItemView).getAdapter() != null) {
-            placeHolderView = ((RecyclerWithHeaderAdapter) (((RecyclerView) mScrollItemView).getAdapter())).getPlaceHolderView();
+        if (mScrollItemView instanceof RecyclerView && ((RecyclerView) mScrollItemView).getChildCount() > 0) {
+            placeHolderView = ((RecyclerView) mScrollItemView).getChildAt(0);
         }
 
         if (placeHolderView != null && placeHoderHeight != 0) {
@@ -144,6 +144,22 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
                             stickHeaderViewPagerManager.onRecyclerViewScroll(recyclerView, mRecyclerViewScrollY, position, false);
                         }
                     });
+
+                    if(((RecyclerView) mScrollItemView).getAdapter() != null){
+                        ((RecyclerView) mScrollItemView).getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                            @Override
+                            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+                                checkAdapterDataObserver();
+                            }
+
+                            @Override
+                            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                                super.onItemRangeRemoved(positionStart, itemCount);
+                                checkAdapterDataObserver();
+                            }
+                        });
+                    }
                 } else if (mScrollItemView instanceof NestingWebViewScrollView) {
                     ((NestingWebViewScrollView) mScrollItemView).setOnScrollChangedListener(new NotifyingListenerScrollView.OnScrollChangedListener() {
                         @Override
@@ -157,7 +173,34 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
         }
     }
 
+    private void checkAdapterDataObserver(){
+        if (((RecyclerView) mScrollItemView).getLayoutManager() != null) {
+            if (((RecyclerView) mScrollItemView).getLayoutManager() instanceof LinearLayoutManager) {
+                float recyclerViewBottom = mScrollItemView.getBottom();
+                int countCount = (((RecyclerView) mScrollItemView).getLayoutManager()).getChildCount();
+                if(countCount > 0){
+                    float lastChildViewBottom = (((RecyclerView) mScrollItemView).getLayoutManager()).getChildAt(countCount - 1).getBottom();
+                    float contentViewHeight = lastChildViewBottom - mScrollHeight;
+                    if(contentViewHeight + mHeaderHeight < recyclerViewBottom){
+                        if(mStickHeaderViewPagerManager != null){
+                            mRecyclerViewScrollY = 0;
+                            (((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPosition(0);
+                            mStickHeaderViewPagerManager.onRecyclerViewScroll((RecyclerView) mScrollItemView, mRecyclerViewScrollY, mPosition, true);
+                        }
+                    }
+                }
+            } else if (((RecyclerView) mScrollItemView).getLayoutManager() instanceof GridLayoutManager) {
+                ((GridLayoutManager) ((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPositionWithOffset(0, -mRecyclerViewScrollY);
+            }
+        }
+    }
+
+    int mScrollHeight;
+    int mHeaderHeight;
+
     public void adjustScroll(int scrollHeight, int headerHeight) {
+        this.mScrollHeight = scrollHeight;
+        this.mHeaderHeight = headerHeight;
         if (mScrollItemView == null) return;
 
         if (mScrollItemView instanceof ListView) {

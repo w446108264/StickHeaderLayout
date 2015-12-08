@@ -166,10 +166,8 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
         if (mStickHeaderHeight != 0 && mStickViewHeight != 0) {
             mMinHeaderTranslation = -mStickHeaderHeight + mStickViewHeight;
 
-            if (mScrollItemView instanceof RecyclerView) {
-                if (((RecyclerView) mScrollItemView).getAdapter() != null) {
-                    placeHolderView = ((RecyclerWithHeaderAdapter) (((RecyclerView) mScrollItemView).getAdapter())).getPlaceHolderView();
-                }
+            if (mScrollItemView instanceof RecyclerView && ((RecyclerView) mScrollItemView).getChildCount() > 0) {
+                placeHolderView = ((RecyclerView) mScrollItemView).getChildAt(0);
             }
 
             if (placeHolderView != null) {
