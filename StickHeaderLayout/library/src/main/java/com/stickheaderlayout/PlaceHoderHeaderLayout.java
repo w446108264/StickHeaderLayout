@@ -30,6 +30,9 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
     private int mRecyclerViewScrollY;
     private boolean mIsRegisterScrollListener;
 
+    private StickHeaderViewPagerManager mStickHeaderViewPagerManager;
+    private int mPosition;
+
     public PlaceHoderHeaderLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.StickHeaderLayout);
@@ -94,6 +97,10 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
     }
 
     public void updatePlaceHeight(final int placeHoderHeight, final StickHeaderViewPagerManager stickHeaderViewPagerManager, final int position) {
+
+        this.mStickHeaderViewPagerManager = stickHeaderViewPagerManager;
+        this.mPosition = position;
+
         if (mScrollItemView instanceof RecyclerView && ((RecyclerView) mScrollItemView).getAdapter() != null) {
             placeHolderView = ((RecyclerWithHeaderAdapter) (((RecyclerView) mScrollItemView).getAdapter())).getPlaceHolderView();
         }
@@ -121,8 +128,7 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
                 } else if (mScrollItemView instanceof ListView) {
                     ((ListView) mScrollItemView).setOnScrollListener(new AbsListView.OnScrollListener() {
                         @Override
-                        public void onScrollStateChanged(AbsListView view, int scrollState) {
-                        }
+                        public void onScrollStateChanged(AbsListView view, int scrollState) { }
 
                         @Override
                         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -135,7 +141,7 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
                         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                             super.onScrolled(recyclerView, dx, dy);
                             mRecyclerViewScrollY += dy;
-                            stickHeaderViewPagerManager.onRecyclerViewScroll(recyclerView, mRecyclerViewScrollY, position);
+                            stickHeaderViewPagerManager.onRecyclerViewScroll(recyclerView, mRecyclerViewScrollY, position, false);
                         }
                     });
                 } else if (mScrollItemView instanceof NestingWebViewScrollView) {
@@ -165,7 +171,21 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
             mRecyclerViewScrollY = headerHeight - scrollHeight;
             if (((RecyclerView) mScrollItemView).getLayoutManager() != null) {
                 if (((RecyclerView) mScrollItemView).getLayoutManager() instanceof LinearLayoutManager) {
-                    ((LinearLayoutManager) ((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPositionWithOffset(0, -mRecyclerViewScrollY);
+                    float recyclerViewBottom = mScrollItemView.getBottom();
+                    int countCount = (((RecyclerView) mScrollItemView).getLayoutManager()).getChildCount();
+                    if(countCount > 0){
+                        float lastChildViewBottom = (((RecyclerView) mScrollItemView).getLayoutManager()).getChildAt(countCount - 1).getBottom();
+                        float contentViewHeight = lastChildViewBottom - headerHeight;
+                        if(contentViewHeight + scrollHeight < recyclerViewBottom){
+                            if(mStickHeaderViewPagerManager != null){
+                                mRecyclerViewScrollY = 0;
+                                (((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPosition(0);
+                                mStickHeaderViewPagerManager.onRecyclerViewScroll((RecyclerView) mScrollItemView, mRecyclerViewScrollY, mPosition, true);
+                            }
+                        } else{
+                            ((LinearLayoutManager) ((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPositionWithOffset(0, -mRecyclerViewScrollY);
+                        }
+                    }
                 } else if (((RecyclerView) mScrollItemView).getLayoutManager() instanceof GridLayoutManager) {
                     ((GridLayoutManager) ((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPositionWithOffset(0, -mRecyclerViewScrollY);
                 }

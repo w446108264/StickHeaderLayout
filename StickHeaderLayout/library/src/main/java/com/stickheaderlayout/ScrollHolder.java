@@ -14,5 +14,5 @@ public interface ScrollHolder {
 
     void onScrollViewScroll(ScrollView view, int x, int y, int oldX, int oldY, int pagePosition);
 
-    void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition);
+    void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition, boolean isScrollToTop);
 }

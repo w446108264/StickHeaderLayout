@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 /**
- *
  * Any problem about the library. Contact me
- *
+ * <p/>
  * https://github.com/w446108264/StickHeaderLayout
  * shengjun8486@gmail.com
- *
+ * <p/>
  * Created by sj on 15/11/22.
  */
 public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, HeaderLinearLayout.OnSizeChangedListener {
@@ -137,7 +137,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
                     mRecyclerViewScrollY += dy;
-                    onRecyclerViewScroll(recyclerView, mRecyclerViewScrollY, 0);
+                    onRecyclerViewScroll(recyclerView, mRecyclerViewScrollY, 0, false);
                 }
             });
         } else if (mScrollItemView instanceof WebView) {
@@ -197,8 +197,15 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
     }
 
     @Override
-    public void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition) {
-        scrollHeader(scrollY);
+    public void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition, boolean isScrollToTop) {
+        if (isScrollToTop) {
+            if (onPlaceHoderListener != null) {
+                onPlaceHoderListener.onScrollChanged(scrollY);
+            }
+            mStickheader.setTranslationY(0);
+        } else {
+            scrollHeader(scrollY);
+        }
     }
 
     public void scrollHeader(int scrollY) {
@@ -232,6 +239,7 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
     float y_move;
     float moveDistanceX;
     float moveDistanceY;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {

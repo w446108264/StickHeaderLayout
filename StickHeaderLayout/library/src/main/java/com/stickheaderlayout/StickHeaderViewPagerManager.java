@@ -26,12 +26,11 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- *
  * Any problem about the library. Contact me
- *
+ * <p/>
  * https://github.com/w446108264/StickHeaderLayout
  * shengjun8486@gmail.com
- *
+ * <p/>
  * Created by sj on 15/11/22.
  */
 public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListener, StickHeaderLayout.OnPlaceHoderListener, ScrollHolder {
@@ -61,7 +60,7 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
         if (layout == null) {
             return;
         }
-        if(isCanPullToRefresh){
+        if (isCanPullToRefresh) {
             canPullToRefreshPosiTionSet.add(position);
         }
         placeHoderHeaderLayoutList.put(position, layout);
@@ -85,7 +84,9 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
                 placeHoderHeaderLayout = placeHoderHeaderLayoutList.valueAt(position + 1);
             }
             View mStickheader = mStickHeaderLayout.getStickHeaderView();
-            placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight());
+            if (placeHoderHeaderLayout != null) {
+                placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight());
+            }
         }
     }
 
@@ -96,17 +97,22 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
         }
         PlaceHoderHeaderLayout placeHoderHeaderLayout = placeHoderHeaderLayoutList.valueAt(position);
         View mStickheader = mStickHeaderLayout.getStickHeaderView();
-        placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight());
+        if (placeHoderHeaderLayout != null) {
+            placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight());
+        }
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) { }
+    public void onPageScrollStateChanged(int state) {
+    }
 
     @Override
     public void onSizeChanged(int placeHoderHeight, int stickHeight) {
         this.placeHoderHeight = placeHoderHeight;
         for (int i = 0; i < placeHoderHeaderLayoutList.size(); i++) {
-            placeHoderHeaderLayoutList.get(i).updatePlaceHeight(placeHoderHeight, this,placeHoderHeaderLayoutList.indexOfValue(placeHoderHeaderLayoutList.get(i)));
+            if (placeHoderHeaderLayoutList.get(i) != null) {
+                placeHoderHeaderLayoutList.get(i).updatePlaceHeight(placeHoderHeight, this, placeHoderHeaderLayoutList.indexOfValue(placeHoderHeaderLayoutList.get(i)));
+            }
         }
     }
 
@@ -118,7 +124,7 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
     @Override
     public void onListViewScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount, int pagePosition) {
         if (mViewPager.getCurrentItem() == pagePosition) {
-            mStickHeaderLayout.onListViewScroll(view, firstVisibleItem, visibleItemCount, totalItemCount ,pagePosition);
+            mStickHeaderLayout.onListViewScroll(view, firstVisibleItem, visibleItemCount, totalItemCount, pagePosition);
         }
     }
 
@@ -130,15 +136,15 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
     }
 
     @Override
-    public void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition) {
+    public void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition, boolean isScrollToTop) {
         if (mViewPager.getCurrentItem() == pagePosition) {
-            mStickHeaderLayout.onRecyclerViewScroll(view, scrollY, pagePosition);
+            mStickHeaderLayout.onRecyclerViewScroll(view, scrollY, pagePosition, isScrollToTop);
         }
     }
 
-    public boolean isCanPullToRefresh(){
+    public boolean isCanPullToRefresh() {
         int currentItem = mViewPager.getCurrentItem();
-        if(mStickHeaderTranslationY <= 0 && canPullToRefreshPosiTionSet.contains(currentItem)){
+        if (mStickHeaderTranslationY <= 0 && canPullToRefreshPosiTionSet.contains(currentItem)) {
             return mStickHeaderLayout == null ? true : !mStickHeaderLayout.isHorizontalScrolling();
         }
         return false;

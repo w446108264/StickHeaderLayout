@@ -50,7 +50,7 @@ public class SimpleRecyclerView extends FrameLayout{
     private List<String> createItemList() {
         List<String> list = new ArrayList<>();
 
-        for(int i = 0 ; i < 100 ; i++){
+        for(int i = 0 ; i < 6 ; i++){
             list.add("" + i);
         }
         return list;
