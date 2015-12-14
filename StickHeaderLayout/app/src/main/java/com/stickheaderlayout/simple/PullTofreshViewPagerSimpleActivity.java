@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -50,8 +51,10 @@ public class PullTofreshViewPagerSimpleActivity extends AppCompatActivity {
 
     ArrayList<ViewPagerBean> viewList;
     StickHeaderViewPagerManager manager;
-    ViewPager mViewPager;
-
+    NoScrollViewPager mViewPager;
+    TextView tv_title;
+    TextView tv_headertitle;
+    int titleTop = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +67,23 @@ public class PullTofreshViewPagerSimpleActivity extends AppCompatActivity {
             }
         });
 
-        mViewPager = (ViewPager)findViewById(R.id.v_scroll);
+        tv_headertitle = (TextView) findViewById(R.id.tv_headertitle);
+        tv_title = (TextView)findViewById(R.id.tv_title);
+
+        mViewPager = (NoScrollViewPager)findViewById(R.id.v_scroll);
         StickHeaderLayout shl_root = (StickHeaderLayout)findViewById(R.id.shl_root);
+        mViewPager.setHeaderView(shl_root.getStickHeaderView());
 
         manager = new StickHeaderViewPagerManager(shl_root,mViewPager);
+        manager.setOnPlaceHoderListener(new StickHeaderViewPagerManager.OnHeaderScrollListener() {
+            @Override
+            public void onScrollChanged(int height) {
+                if(titleTop == 0){
+                    titleTop = tv_title.getTop();
+                }
+                Log.i("sacaasdas","onScrollChanged:" + height + "   titleTop:" + titleTop + "  tv_title.getTop():" + tv_title.getTop());
+            }
+        });
 
         PtrClassicFrameLayout rotate_header_list_view_frame = (PtrClassicFrameLayout)findViewById(R.id.rotate_header_list_view_frame);
         rotate_header_list_view_frame.setEnabledNextPtrAtOnce(true);
@@ -103,6 +119,31 @@ public class PullTofreshViewPagerSimpleActivity extends AppCompatActivity {
         mViewPager.setAdapter(pagerAdapter);
 
         initTabBar();
+
+        tv_title.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("asdasdasd","tv_title.getTop():" + tv_title.getTop());
+            }
+        },5000);
+        tv_title.setTranslationY(-1000);
+        shl_root.addOnPlaceHoderListener(new StickHeaderLayout.OnPlaceHoderListener() {
+            @Override
+            public void onSizeChanged(int headerHeight, int stickHeight) {
+
+            }
+
+            @Override
+            public void onScrollChanged(int height) {
+
+            }
+
+            @Override
+            public void onHeaderTranslationY(float translationY) {
+                float top = ((View)tv_title.getParent()).getBottom() - tv_title.getTop();
+                tv_title.setTranslationY(Math.max(0,tv_headertitle.getTop() + top + translationY));
+            }
+        });
     }
 
     public void initTabBar(){
