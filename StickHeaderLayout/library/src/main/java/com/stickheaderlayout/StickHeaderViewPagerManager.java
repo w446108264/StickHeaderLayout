@@ -46,7 +46,7 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
         this.mViewPager = viewPager;
         this.mStickHeaderLayout = stickHeaderLayout;
         mViewPager.addOnPageChangeListener(this);
-        mStickHeaderLayout.setOnPlaceHoderListener(this);
+        mStickHeaderLayout.addOnPlaceHoderListener(this);
     }
 
     public void addPlaceHoderHeaderLayout(final int position, final PlaceHoderHeaderLayout layout) {
@@ -85,7 +85,7 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
             }
             View mStickheader = mStickHeaderLayout.getStickHeaderView();
             if (placeHoderHeaderLayout != null) {
-                placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight());
+                placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight(), false);
             }
         }
     }
@@ -98,7 +98,7 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
         PlaceHoderHeaderLayout placeHoderHeaderLayout = placeHoderHeaderLayoutList.valueAt(position);
         View mStickheader = mStickHeaderLayout.getStickHeaderView();
         if (placeHoderHeaderLayout != null) {
-            placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight());
+            placeHoderHeaderLayout.adjustScroll((int) (mStickheader.getHeight() + mStickheader.getTranslationY()), mStickheader.getHeight(), true);
         }
     }
 
@@ -119,6 +119,14 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
     @Override
     public void onScrollChanged(int height) {
         mStickHeaderTranslationY = height;
+        if(onHeaderScrollListener != null){
+            onHeaderScrollListener.onScrollChanged(height);
+        }
+    }
+
+    @Override
+    public void onHeaderTranslationY(float translationY) {
+
     }
 
     @Override
@@ -152,5 +160,15 @@ public class StickHeaderViewPagerManager implements ViewPager.OnPageChangeListen
 
     public int getStickHeaderTranslationY() {
         return mStickHeaderTranslationY;
+    }
+
+    OnHeaderScrollListener onHeaderScrollListener;
+
+    public void setOnPlaceHoderListener(OnHeaderScrollListener onHeaderScrollListener) {
+        this.onHeaderScrollListener = onHeaderScrollListener;
+    }
+
+    public interface OnHeaderScrollListener {
+        void onScrollChanged(int height);
     }
 }

@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import java.util.ArrayList;
+
 /**
  * Any problem about the library. Contact me
  * <p/>
@@ -178,8 +180,10 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
                 }
             }
 
-            if (onPlaceHoderListener != null) {
-                onPlaceHoderListener.onSizeChanged(mStickHeaderHeight, mMinHeaderTranslation);
+            if (onPlaceHoderListenerListeners != null) {
+                for(OnPlaceHoderListener listener : onPlaceHoderListenerListeners){
+                    listener.onSizeChanged(mStickHeaderHeight, mMinHeaderTranslation);
+                }
             }
         }
     }
@@ -197,21 +201,34 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
     @Override
     public void onRecyclerViewScroll(RecyclerView view, int scrollY, int pagePosition, boolean isScrollToTop) {
         if (isScrollToTop) {
-            if (onPlaceHoderListener != null) {
-                onPlaceHoderListener.onScrollChanged(scrollY);
+            if (onPlaceHoderListenerListeners != null) {
+                for(OnPlaceHoderListener listener : onPlaceHoderListenerListeners){
+                    listener.onScrollChanged(scrollY);
+                }
             }
-            mStickheader.setTranslationY(0);
+            headerTranslationY(0);
         } else {
             scrollHeader(scrollY);
         }
     }
 
     public void scrollHeader(int scrollY) {
-        if (onPlaceHoderListener != null) {
-            onPlaceHoderListener.onScrollChanged(scrollY);
+        if (onPlaceHoderListenerListeners != null) {
+            for(OnPlaceHoderListener listener : onPlaceHoderListenerListeners){
+                listener.onScrollChanged(scrollY);
+            }
         }
         float translationY = Math.max(-scrollY, mMinHeaderTranslation);
+        headerTranslationY(translationY);
+    }
+
+    public void headerTranslationY(float translationY){
         mStickheader.setTranslationY(translationY);
+        if (onPlaceHoderListenerListeners != null) {
+            for(OnPlaceHoderListener listener : onPlaceHoderListenerListeners){
+                listener.onHeaderTranslationY(translationY);
+            }
+        }
     }
 
     private int getListScrollY(AbsListView view) {
@@ -273,16 +290,20 @@ public class StickHeaderLayout extends RelativeLayout implements ScrollHolder, H
         return mIsHorizontalScrolling;
     }
 
-    OnPlaceHoderListener onPlaceHoderListener;
+    ArrayList<OnPlaceHoderListener> onPlaceHoderListenerListeners = new ArrayList<>();
 
-    public void setOnPlaceHoderListener(OnPlaceHoderListener onPlaceHoderListener) {
-        this.onPlaceHoderListener = onPlaceHoderListener;
+    public void addOnPlaceHoderListener(OnPlaceHoderListener onPlaceHoderListener) {
+        if(onPlaceHoderListener != null){
+            onPlaceHoderListenerListeners.add(onPlaceHoderListener);
+        }
     }
 
     public interface OnPlaceHoderListener {
         void onSizeChanged(int headerHeight, int stickHeight);
 
         void onScrollChanged(int height);
+
+        void onHeaderTranslationY(float translationY);
     }
 
     @Override

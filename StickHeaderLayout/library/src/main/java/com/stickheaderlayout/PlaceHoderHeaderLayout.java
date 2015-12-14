@@ -198,7 +198,7 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
     int mScrollHeight;
     int mHeaderHeight;
 
-    public void adjustScroll(int scrollHeight, int headerHeight) {
+    public void adjustScroll(int scrollHeight, int headerHeight, boolean isPageSelected) {
         this.mScrollHeight = scrollHeight;
         this.mHeaderHeight = headerHeight;
         if (mScrollItemView == null) return;
@@ -220,7 +220,7 @@ public class PlaceHoderHeaderLayout extends FrameLayout {
                         float lastChildViewBottom = (((RecyclerView) mScrollItemView).getLayoutManager()).getChildAt(countCount - 1).getBottom();
                         float contentViewHeight = lastChildViewBottom - headerHeight;
                         if(contentViewHeight + scrollHeight < recyclerViewBottom){
-                            if(mStickHeaderViewPagerManager != null){
+                            if(mStickHeaderViewPagerManager != null && isPageSelected){
                                 mRecyclerViewScrollY = 0;
                                 (((RecyclerView) mScrollItemView).getLayoutManager()).scrollToPosition(0);
                                 mStickHeaderViewPagerManager.onRecyclerViewScroll((RecyclerView) mScrollItemView, mRecyclerViewScrollY, mPosition, true);

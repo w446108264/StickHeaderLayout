@@ -11,6 +11,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -43,6 +44,7 @@ public class PullTofreshViewPagerFragmentSimpleActivity extends AppCompatActivit
     ArrayList<Fragment> mFragmentList;
     StickHeaderViewPagerManager manager;
     ViewPager mViewPager;
+    TextView tv_headertitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class PullTofreshViewPagerFragmentSimpleActivity extends AppCompatActivit
             }
         });
 
+        tv_headertitle = (TextView) findViewById(R.id.tv_headertitle);
         mViewPager = (ViewPager)findViewById(R.id.v_scroll);
         StickHeaderLayout shl_root = (StickHeaderLayout)findViewById(R.id.shl_root);
 
@@ -90,6 +93,23 @@ public class PullTofreshViewPagerFragmentSimpleActivity extends AppCompatActivit
         mViewPager.setAdapter(pagerAdapter);
 
         initTabBar();
+
+        shl_root.addOnPlaceHoderListener(new StickHeaderLayout.OnPlaceHoderListener() {
+            @Override
+            public void onSizeChanged(int headerHeight, int stickHeight) {
+
+            }
+
+            @Override
+            public void onScrollChanged(int height) {
+
+            }
+
+            @Override
+            public void onHeaderTranslationY(float translationY) {
+                Log.i("asdasdasd","translationY:" + translationY + "   tv_headertitle.top:" + tv_headertitle.getTop());
+            }
+        });
     }
 
     public void initTabBar(){

@@ -46,7 +46,7 @@ public class PullToRefreshListViewSimpleActivity extends AppCompatActivity {
             }
         });
 
-        shl_root.setOnPlaceHoderListener(new StickHeaderLayout.OnPlaceHoderListener() {
+        shl_root.addOnPlaceHoderListener(new StickHeaderLayout.OnPlaceHoderListener() {
             @Override
             public void onSizeChanged(int headerHeight, int stickHeight) { }
 
@@ -57,6 +57,11 @@ public class PullToRefreshListViewSimpleActivity extends AppCompatActivity {
                 } else {
                     isCanScroll = false;
                 }
+            }
+
+            @Override
+            public void onHeaderTranslationY(float translationY) {
+
             }
         });
 

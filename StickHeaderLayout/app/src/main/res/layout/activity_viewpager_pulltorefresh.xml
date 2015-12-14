@@ -20,6 +20,7 @@
             android:text="back" />
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -47,12 +48,20 @@
             android:layout_height="match_parent"
             tools:context=".ListViewSimpleActivity">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="#293"
                 android:gravity="center"
-                android:text="header" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_headertitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PullToRefresh In ViewPager Simple" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
