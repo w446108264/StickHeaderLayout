@@ -75,6 +75,8 @@ public class RecyclerViewSimpleActivity extends AppCompatActivity {
             viewHolder.tvTitle.setText(mItemList.get(position));
         }
 
+
+
         @Override
         public int getitemCount() {
             return mItemList == null ? 0 : mItemList.size();
