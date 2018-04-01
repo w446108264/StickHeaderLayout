@@ -1,15 +1,11 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group='com.github.w446108264'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 27
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 21
+        minSdkVersion 19
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -22,6 +18,6 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:recyclerview-v7:22.1.1'
-    compile 'com.android.support:support-v4:22.+'
+    compile 'com.android.support:recyclerview-v7:27.1.0'
+    compile 'com.android.support:support-v4:27.1.0'
 }
